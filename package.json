@@ -11,7 +11,7 @@
     "ci"
   ],
   "license": "MIT",
-  "author": "port (https://github.com/portdeveloper)",
+  "author": "port <portdev@protonmail.com> (https://github.com/portdeveloper)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/portdeveloper/llms-txt-check.git"

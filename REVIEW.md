@@ -5,7 +5,7 @@ Things I (Claude) decided on your behalf while scaffolding. Delete this file onc
 ## Decisions to confirm
 
 1. ~~Package name~~ Resolved: `llms-txt-check`, per your pick.
-2. **Author field has no email** (`port (https://github.com/portdeveloper)`). You chose personal email but I don't know the address; add it to package.json `author` when convenient.
+2. ~~Author email~~ Resolved: portdev@protonmail.com.
 3. **`off-origin-url` is a warning, exit 0.** bun.sh serves an llms.txt whose links all point at bun.com (domain migration). Real situation, arguably intentional on their side, so it warns without failing. Flip to error if you disagree.
 4. **`--sample` defaults to all links.** A 2000-link file (PostHog) takes ~4 min at concurrency 8. Fine for CI, maybe surprising for a curious first run. Could default to 100 with an `--all` flag instead.
 5. **No baseline/drift mode yet.** The watchman-style "fail only on regressions" mode is deferred to v0.2 to keep v0.1 small. README doesn't promise it.
