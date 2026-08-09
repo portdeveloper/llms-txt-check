@@ -60,6 +60,14 @@ test("accepts colonless descriptions with a flag", () => {
   assert.equal(doc.malformed.length, 0);
 });
 
+test("prose bullets with inline links are not malformed", () => {
+  const doc = parse(
+    "# T\n\n## S\n\n- **Bold claim.** See [site](https://a.com) for details.\n"
+  );
+  assert.equal(doc.malformed.length, 0);
+  assert.equal(links(doc).length, 0);
+});
+
 test("handles multi-line blockquote summary", () => {
   const doc = parse("# T\n\n> line one\n> line two\n");
   assert.equal(doc.summary, "line one line two");

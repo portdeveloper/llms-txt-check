@@ -32,7 +32,9 @@ export interface LlmsTxtDocument {
 }
 
 const LINK_RE = /^[-*]\s+\[(.*)\]\(([^)\s]+)\)\s*(.*)$/;
-const LOOKS_LIKE_LINK_RE = /^[-*]\s+.*\]\(/;
+// Only bullets that open with `[` are attempted link entries; prose bullets
+// with inline links (e.g. expo.dev's llms.txt) are not malformed.
+const LOOKS_LIKE_LINK_RE = /^[-*]\s+\[.*\]\(/;
 
 export function parse(text: string): LlmsTxtDocument {
   const doc: LlmsTxtDocument = {
