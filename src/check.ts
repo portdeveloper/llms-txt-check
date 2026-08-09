@@ -37,7 +37,7 @@ export interface SiteReport {
 }
 
 const DEFAULT_UA =
-  "llmstxt-check/0.1 (+https://github.com/portdeveloper/llmstxt-check)";
+  "llms-txt-check/0.1 (+https://github.com/portdeveloper/llms-txt-check)";
 const BODY_CAP = 200_000;
 
 interface FetchResult {

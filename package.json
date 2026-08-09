@@ -1,5 +1,5 @@
 {
-  "name": "llmstxt-check",
+  "name": "llms-txt-check",
   "version": "0.1.0",
   "description": "Parse, lint, and validate llms.txt files against the deployed site that serves them.",
   "keywords": [
@@ -11,10 +11,10 @@
     "ci"
   ],
   "license": "MIT",
-  "author": "port <port@monad.foundation>",
+  "author": "port (https://github.com/portdeveloper)",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/portdeveloper/llmstxt-check.git"
+    "url": "git+https://github.com/portdeveloper/llms-txt-check.git"
   },
   "type": "module",
   "main": "./dist/index.js",
@@ -26,7 +26,7 @@
     }
   },
   "bin": {
-    "llmstxt-check": "./dist/cli.js"
+    "llms-txt-check": "./dist/cli.js"
   },
   "files": [
     "dist",

@@ -4,12 +4,12 @@ import { parse } from "./parse.js";
 import { lint } from "./lint.js";
 import { checkSite, checkText, type SiteReport } from "./check.js";
 
-const HELP = `llmstxt-check - validate llms.txt against the site that serves it
+const HELP = `llms-txt-check - validate llms.txt against the site that serves it
 
 Usage:
-  llmstxt-check <url>            Fetch <url>/llms.txt (or the .txt URL directly)
+  llms-txt-check <url>            Fetch <url>/llms.txt (or the .txt URL directly)
                                  and verify every listed URL actually serves content.
-  llmstxt-check <file> --lint    Lint a local llms.txt without network checks.
+  llms-txt-check <file> --lint    Lint a local llms.txt without network checks.
 
 Options:
   --lint             Lint only, skip URL fetching

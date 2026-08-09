@@ -1,11 +1,11 @@
-# llmstxt-check
+# llms-txt-check
 
 Validate a site's `llms.txt` against what the site actually serves.
 
 Your llms.txt generator promises AI tools a map of your docs. This tool verifies the deployed site honors the map, and fails your CI when it stops.
 
 ```bash
-npx llmstxt-check https://your-docs-site.com
+npx llms-txt-check https://your-docs-site.com
 ```
 
 ## Why a generator isn't enough
@@ -30,26 +30,26 @@ None of these sites had a broken build. All of them had a broken llms.txt.
 
 ```bash
 # Check a deployed site (fetches <url>/llms.txt)
-npx llmstxt-check https://docs.example.com
+npx llms-txt-check https://docs.example.com
 
 # Check a llms.txt URL directly
-npx llmstxt-check https://docs.example.com/llms.txt
+npx llms-txt-check https://docs.example.com/llms.txt
 
 # Lint a local file without network checks
-npx llmstxt-check ./static/llms.txt --lint
+npx llms-txt-check ./static/llms.txt --lint
 
 # Spot-check 50 URLs spread across a large file
-npx llmstxt-check https://docs.example.com --sample 50
+npx llms-txt-check https://docs.example.com --sample 50
 
 # Machine-readable output
-npx llmstxt-check https://docs.example.com --json
+npx llms-txt-check https://docs.example.com --json
 ```
 
 Exit code 0 means healthy, 1 means problems were found, 2 means the tool itself could not run. That makes CI integration one line:
 
 ```yaml
 # .github/workflows/deploy.yml, after your deploy step
-- run: npx llmstxt-check ${{ env.DEPLOY_URL }}
+- run: npx llms-txt-check ${{ env.DEPLOY_URL }}
 ```
 
 ## Library API
@@ -57,7 +57,7 @@ Exit code 0 means healthy, 1 means problems were found, 2 means the tool itself 
 The parser and checks are exported for programmatic use, with zero dependencies:
 
 ```ts
-import { parse, lint, checkSite } from "llmstxt-check";
+import { parse, lint, checkSite } from "llms-txt-check";
 
 const doc = parse(text);
 // { title, summary, preamble, sections: [{ name, links: [{ title, url, description }] }] }
