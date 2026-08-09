@@ -8,6 +8,8 @@ export interface LlmsTxtLink {
   title: string;
   url: string;
   description?: string;
+  /** True when the description lacks the spec's `: ` separator. */
+  missingColon?: boolean;
   /** 1-indexed line number in the source file. */
   line: number;
 }
@@ -29,7 +31,7 @@ export interface LlmsTxtDocument {
   malformed: { raw: string; line: number }[];
 }
 
-const LINK_RE = /^[-*]\s+\[(.*)\]\(([^)\s]+)\)\s*(?::\s*(.*))?$/;
+const LINK_RE = /^[-*]\s+\[(.*)\]\(([^)\s]+)\)\s*(.*)$/;
 const LOOKS_LIKE_LINK_RE = /^[-*]\s+.*\]\(/;
 
 export function parse(text: string): LlmsTxtDocument {
@@ -76,8 +78,16 @@ export function parse(text: string): LlmsTxtDocument {
         url: (match[2] ?? "").trim(),
         line: lineNo,
       };
-      const description = (match[3] ?? "").trim();
-      if (description) link.description = description;
+      const trailing = (match[3] ?? "").trim();
+      if (trailing.startsWith(":")) {
+        const description = trailing.slice(1).trim();
+        if (description) link.description = description;
+      } else if (trailing) {
+        // Spec wants `: description`, but files like hono.dev's omit the
+        // colon; accept the link and let lint warn instead of erroring.
+        link.description = trailing;
+        link.missingColon = true;
+      }
       if (section) {
         section.links.push(link);
       } else {

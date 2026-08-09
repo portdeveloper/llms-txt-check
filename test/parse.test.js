@@ -52,6 +52,14 @@ test("handles nested brackets in titles", () => {
   assert.equal(doc.malformed.length, 0);
 });
 
+test("accepts colonless descriptions with a flag", () => {
+  const doc = parse("# T\n\n## S\n\n- [a](https://a.com/x) some description\n");
+  const link = links(doc)[0];
+  assert.equal(link.description, "some description");
+  assert.equal(link.missingColon, true);
+  assert.equal(doc.malformed.length, 0);
+});
+
 test("handles multi-line blockquote summary", () => {
   const doc = parse("# T\n\n> line one\n> line two\n");
   assert.equal(doc.summary, "line one line two");

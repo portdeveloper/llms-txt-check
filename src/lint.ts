@@ -59,6 +59,14 @@ export function lint(
 
   const seen = new Map<string, number>();
   for (const link of links(doc)) {
+    if (link.missingColon) {
+      issues.push({
+        rule: "description-missing-colon",
+        severity: "warning",
+        message: `Description lacks the spec's ": " separator: ${link.url}`,
+        line: link.line,
+      });
+    }
     const prior = seen.get(link.url);
     if (prior !== undefined) {
       issues.push({
