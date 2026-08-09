@@ -121,10 +121,14 @@ async function main(): Promise<number> {
   return printReport(report, args.json);
 }
 
+// Set exitCode instead of calling process.exit(), which can truncate
+// large piped stdout (e.g. --json reports) before it flushes.
 main().then(
-  (code) => process.exit(code),
+  (code) => {
+    process.exitCode = code;
+  },
   (err) => {
     console.error(err instanceof Error ? err.message : String(err));
-    process.exit(2);
+    process.exitCode = 2;
   }
 );
