@@ -14,11 +14,12 @@ Generators run at build time. Breakage happens at the serving layer: host redire
 
 Real examples found with this tool in August 2026:
 
-- Drizzle ORM's llms.txt listed 70 URLs (16% of the file, the entire PostgreSQL section) that returned 404 in production.
+- Drizzle ORM's llms.txt listed 71 URLs that returned 404 in production (16% of the file, the entire PostgreSQL section).
 - Cursor's docs moved domains, and the old `docs.cursor.com/llms.txt` started redirecting to an HTML marketing page. Agents holding the previously correct URL now ingest a React shell.
-- A Docusaurus site served a zero-byte llms.txt because of a `trailingSlash` config interaction.
+- LiteLLM's llms.txt had dead links too, including its own intro page.
+- A Docusaurus site once served a zero-byte llms.txt thanks to a `trailingSlash` config interaction with its host.
 
-None of these sites had a broken build. All of them had a broken llms.txt.
+Every one of these sites had a green build while serving a broken llms.txt.
 
 ## What it checks
 
