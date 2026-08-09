@@ -1,0 +1,102 @@
+import type { LlmsTxtDocument } from "./parse.js";
+import { links } from "./parse.js";
+
+export type Severity = "error" | "warning";
+
+export interface LintIssue {
+  rule: string;
+  severity: Severity;
+  message: string;
+  line?: number;
+}
+
+export interface LintOptions {
+  /** Origin the file is served from, e.g. "https://docs.example.com". Enables off-origin checks. */
+  origin?: string;
+}
+
+export function lint(
+  doc: LlmsTxtDocument,
+  options: LintOptions = {}
+): LintIssue[] {
+  const issues: LintIssue[] = [];
+
+  if (doc.title === undefined) {
+    issues.push({
+      rule: "missing-title",
+      severity: "error",
+      message: "File has no H1 title; the spec requires one as the first line.",
+    });
+  }
+
+  for (const m of doc.malformed) {
+    issues.push({
+      rule: "malformed-link",
+      severity: "error",
+      message: `List item looks like a link but does not parse: ${m.raw.trim()}`,
+      line: m.line,
+    });
+  }
+
+  for (const section of doc.sections) {
+    if (section.name && section.links.length === 0) {
+      issues.push({
+        rule: "empty-section",
+        severity: "warning",
+        message: `Section "${section.name}" contains no links.`,
+        line: section.line,
+      });
+    }
+    if (!section.name && section.links.length > 0) {
+      issues.push({
+        rule: "orphan-links",
+        severity: "warning",
+        message: "Links appear before any ## section heading.",
+        line: section.line,
+      });
+    }
+  }
+
+  const seen = new Map<string, number>();
+  for (const link of links(doc)) {
+    const prior = seen.get(link.url);
+    if (prior !== undefined) {
+      issues.push({
+        rule: "duplicate-url",
+        severity: "warning",
+        message: `URL already listed on line ${prior}: ${link.url}`,
+        line: link.line,
+      });
+    } else {
+      seen.set(link.url, link.line);
+    }
+
+    if (!/^https?:\/\//.test(link.url)) {
+      issues.push({
+        rule: "relative-url",
+        severity: "error",
+        message: `URL is not absolute: ${link.url}`,
+        line: link.line,
+      });
+      continue;
+    }
+
+    if (options.origin) {
+      try {
+        const expected = new URL(options.origin).origin;
+        if (new URL(link.url).origin !== expected) {
+          issues.push({
+            rule: "off-origin-url",
+            severity: "warning",
+            message: `URL points off-origin (${link.url}); expected ${new URL(options.origin).origin}`,
+            line: link.line,
+          });
+        }
+      } catch {
+        // Unparseable URLs already reported by relative-url.
+      }
+    }
+  }
+
+  return issues;
+}
