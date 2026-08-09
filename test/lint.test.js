@@ -6,7 +6,7 @@ const rules = (text, options) =>
   lint(parse(text), options).map((i) => i.rule);
 
 test("flags missing title", () => {
-  assert.ok(rules("- [a](https://a.com)\n").includes("missing-title"));
+  assert.equal(lint(parse("- [a](https://a.com)\n")).find((i) => i.rule === "missing-title").severity, "warning");
 });
 
 test("flags duplicate urls", () => {
