@@ -19,8 +19,14 @@ test("flags empty sections", () => {
   assert.ok(rules("# T\n\n## Empty\n\n## Full\n\n- [a](https://a.com)\n").includes("empty-section"));
 });
 
-test("flags relative urls", () => {
-  assert.ok(rules("# T\n\n## S\n\n- [a](/docs/a)\n").includes("relative-url"));
+test("relative urls error without origin, warn with one", () => {
+  const text = "# T\n\n## S\n\n- [a](/docs/a)\n";
+  const noOrigin = lint(parse(text)).find((i) => i.rule === "relative-url");
+  assert.equal(noOrigin.severity, "error");
+  const withOrigin = lint(parse(text), { origin: "https://a.com" }).find(
+    (i) => i.rule === "relative-url"
+  );
+  assert.equal(withOrigin.severity, "warning");
 });
 
 test("flags off-origin urls when origin is known", () => {

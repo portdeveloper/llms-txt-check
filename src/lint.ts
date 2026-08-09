@@ -80,10 +80,14 @@ export function lint(
     }
 
     if (!/^https?:\/\//.test(link.url)) {
+      // VitePress's generator emits relative URLs; resolvable against a
+      // known origin, so only fatal when there is nothing to resolve with.
       issues.push({
         rule: "relative-url",
-        severity: "error",
-        message: `URL is not absolute: ${link.url}`,
+        severity: options.origin ? "warning" : "error",
+        message: options.origin
+          ? `URL is relative (resolved against ${new URL(options.origin).origin} for checks): ${link.url}`
+          : `URL is not absolute and no origin is known: ${link.url}`,
         line: link.line,
       });
       continue;

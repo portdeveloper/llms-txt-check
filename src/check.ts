@@ -173,9 +173,21 @@ export async function checkText(
   const userAgent = options.userAgent ?? DEFAULT_UA;
   const minBodyBytes = options.minBodyBytes ?? 100;
 
-  const checked = await pool(picked, options.concurrency ?? 8, async (link) =>
-    classify(link, await fetchUrl(link.url, timeoutMs, userAgent), minBodyBytes)
-  );
+  const checked = await pool(picked, options.concurrency ?? 8, async (link) => {
+    let target = link;
+    if (!/^https?:\/\//.test(link.url)) {
+      try {
+        target = { ...link, url: new URL(link.url, source).toString() };
+      } catch {
+        // Unresolvable stays as-is and surfaces as a fetch-error.
+      }
+    }
+    return classify(
+      target,
+      await fetchUrl(target.url, timeoutMs, userAgent),
+      minBodyBytes
+    );
+  });
 
   return {
     source,
