@@ -61,6 +61,14 @@ export function lint(
 
   const seen = new Map<string, number>();
   for (const link of links(doc)) {
+    if (link.missingBullet) {
+      issues.push({
+        rule: "missing-list-bullet",
+        severity: "warning",
+        message: `Link line lacks the spec's "- " list bullet: ${link.url}`,
+        line: link.line,
+      });
+    }
     if (link.missingColon) {
       issues.push({
         rule: "description-missing-colon",

@@ -60,6 +60,14 @@ test("accepts colonless descriptions with a flag", () => {
   assert.equal(doc.malformed.length, 0);
 });
 
+test("parses bulletless link lines (mistral style) with a flag", () => {
+  const doc = parse("# T\n\n## S\n\n[a](https://a.com/x): desc\n");
+  const link = links(doc)[0];
+  assert.equal(link.url, "https://a.com/x");
+  assert.equal(link.description, "desc");
+  assert.equal(link.missingBullet, true);
+});
+
 test("prose bullets with inline links are not malformed", () => {
   const doc = parse(
     "# T\n\n## S\n\n- **Bold claim.** See [site](https://a.com) for details.\n"

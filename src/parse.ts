@@ -10,6 +10,8 @@ export interface LlmsTxtLink {
   description?: string;
   /** True when the description lacks the spec's `: ` separator. */
   missingColon?: boolean;
+  /** True when the line lacks the spec's `- ` list bullet (docs.mistral.ai style). */
+  missingBullet?: boolean;
   /** 1-indexed line number in the source file. */
   line: number;
 }
@@ -31,7 +33,8 @@ export interface LlmsTxtDocument {
   malformed: { raw: string; line: number }[];
 }
 
-const LINK_RE = /^[-*]\s+\[(.*)\]\(([^)\s]+)\)\s*(.*)$/;
+// Bullet is optional: docs.mistral.ai writes bare `[title](url): desc` lines.
+const LINK_RE = /^(?:[-*]\s+)?\[(.*)\]\(([^)\s]+)\)\s*(.*)$/;
 // Only bullets that open with `[` are attempted link entries; prose bullets
 // with inline links (e.g. expo.dev's llms.txt) are not malformed.
 const LOOKS_LIKE_LINK_RE = /^[-*]\s+\[.*\]\(/;
@@ -80,6 +83,7 @@ export function parse(text: string): LlmsTxtDocument {
         url: (match[2] ?? "").trim(),
         line: lineNo,
       };
+      if (!/^[-*]\s/.test(line)) link.missingBullet = true;
       const trailing = (match[3] ?? "").trim();
       if (trailing.startsWith(":")) {
         const description = trailing.slice(1).trim();
